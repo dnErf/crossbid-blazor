@@ -21,6 +21,7 @@ pnpm-debug.log*
 .env.production
 
 # app settings
+launchSettings.json
 appsettings.Development.json
 appsettings.json
 
@@ -30,3 +31,7 @@ appsettings.json
 # ide folder
 .idea/
 .vscode/
+.vs/
+
+# etc
+*.csproj.user
