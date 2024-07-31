@@ -1,21 +1,21 @@
+using crossbid_blazor.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-var url = Environment.GetEnvironmentVariable("SUPABASE_URL");
-var key = Environment.GetEnvironmentVariable("SUPABASE_KEY");
+var supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL") ?? builder.Configuration.GetValue<string>("SUPABASE:URL");
+var supabasekey = Environment.GetEnvironmentVariable("SUPABASE_KEY") ?? builder.Configuration.GetValue<string>("SUPABASE:KEY");
 
-var options = new Supabase.SupabaseOptions
-{
+builder.Services.AddSingleton(provider => new Supabase.Client(supabaseUrl!, supabasekey, new Supabase.SupabaseOptions {
 	AutoRefreshToken = true,
 	AutoConnectRealtime = true,
 	// SessionHandler = new SupabaseSessionHandler() <-- This must be implemented by the developer
-};
+}));
 
-// Note the creation as a singleton.
-builder.Services.AddTransient(provider => new Supabase.Client(url!, key, options));
+builder.Services.AddScoped<SupabaseSvc>();
 
 var app = builder.Build();
 

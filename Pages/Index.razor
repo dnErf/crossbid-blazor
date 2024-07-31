@@ -1,7 +1,19 @@
 ﻿@page "/"
+@using Services
+@inject SupabaseSvc supabase_svc
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		var a = await supabase_svc.GetAuctionList();
+		Console.WriteLine(a.Id);
+
+		//return await base.OnInitializedAsync();
+	}
+}
