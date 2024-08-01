@@ -12,9 +12,9 @@ public class SupabaseSvc
 		_supabase = supabase;
 	}
 
-	public async Task<Auction> GetAuctionList()
+	public async Task<List<Auction>> GetAuctionList()
 	{
 		var result = await _supabase.From<Auction>().Get();
-		return result.Model!;
+		return result.Models!;
 	}
 }

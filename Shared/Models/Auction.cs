@@ -28,5 +28,5 @@ public class Auction : BaseModel
 	public double CentsBidInterval { get; set; }
 
 	[Column("end_at")]
-	public DateTime EndAt { get; set; }
+	public DateTime EndAt { get; set; } = DateTime.UtcNow;
 }

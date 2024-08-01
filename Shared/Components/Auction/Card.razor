@@ -1,0 +1,27 @@
+﻿<div class="border w-72 p-4">
+	<div>
+		<img 
+			src="/assets/warehouse.jpeg"
+			alt="test"
+			height="200px"
+			width="200px"
+		/>
+	</div>
+	<h1>
+		@auction.Name
+	</h1>
+	<p>
+		starting price $ 99.99
+	</p>
+	<p>
+		bid end on @DateTime.UtcNow.ToShortDateString()
+	</p>
+	<button>
+		view bid
+	</button>
+</div>
+
+@code {
+	[Parameter]
+	public Shared.Models.Auction auction { get; set; } = new();
+}

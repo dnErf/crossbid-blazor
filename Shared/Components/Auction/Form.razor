@@ -1,0 +1,46 @@
+﻿<EditForm Model="@Model" FormName="Auc" OnSubmit="HandleSubmit" class="flex flex-col gap-8 w-2/3">
+	<div class="w-full">
+		<label class="">
+			Auction Title
+			<InputText class="in-txt" @bind-Value="Model!.Name" />
+		</label>
+	</div>
+	<div class="w-full">
+		<label>
+			Starting Price
+			<InputNumber class="in-txt" @bind-Value="Model!.CentsStartingPrice" />
+		</label>
+	</div>
+	<div class="w-full">
+		<label>
+			Auction End Date
+			<InputDate class="in-txt" @bind-Value="Model!.EndAt" />
+		</label>
+	</div>
+	<div class="w-full">
+		<label>
+			<InputFile class="border w-full" />
+		</label>
+	</div>
+	<div class="w-full">
+		<button class="btn text-sm w-full rounded-lg p-2.5">
+			create auction
+		</button>
+	</div>
+</EditForm>
+
+@code {
+	private EditContext? editContext;
+
+	[SupplyParameterFromForm]
+	public Models.Auction? Model { get; set; } = new();
+
+	protected override void OnInitialized()
+	{
+	}
+
+	private void HandleSubmit()
+	{
+		
+	}
+}
