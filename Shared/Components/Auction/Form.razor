@@ -1,25 +1,28 @@
-﻿<EditForm Model="@Model" FormName="Auc" OnSubmit="HandleSubmit" class="flex flex-col gap-8 w-2/3">
+﻿@using crossbid_blazor.Services;
+@inject SupabaseSvc _supabase;
+
+<EditForm Model="@auction" FormName="Auc" OnSubmit="HandleSubmit" class="flex flex-col gap-8 w-2/3">
 	<div class="w-full">
 		<label class="">
 			Auction Title
-			<InputText class="in-txt" @bind-Value="Model!.Name" />
+			<InputText class="in-txt" @bind-Value="auction!.Name" />
 		</label>
 	</div>
 	<div class="w-full">
 		<label>
 			Starting Price
-			<InputNumber class="in-txt" @bind-Value="Model!.CentsStartingPrice" />
+			<InputNumber class="in-txt" @bind-Value="auction!.CentsStartingPrice" />
 		</label>
 	</div>
 	<div class="w-full">
 		<label>
 			Auction End Date
-			<InputDate class="in-txt" @bind-Value="Model!.EndAt" />
+			<InputDate class="in-txt" @bind-Value="auction!.EndAt" />
 		</label>
 	</div>
 	<div class="w-full">
 		<label>
-			<InputFile class="border w-full" />
+			<InputFile class="border w-full" OnChange="UpFiles" />
 		</label>
 	</div>
 	<div class="w-full">
@@ -30,17 +33,47 @@
 </EditForm>
 
 @code {
-	private EditContext? editContext;
-
 	[SupplyParameterFromForm]
-	public Models.Auction? Model { get; set; } = new();
+	public Models.Auction? auction { get; set; } = new();
+
+	private List<IBrowserFile> qFile = new();
+	private long fileSize = 1024 * 500;
+	private int allowedFiles = 1;
+
+	private bool isBusy = false;
 
 	protected override void OnInitialized()
 	{
 	}
 
-	private void HandleSubmit()
+	private async Task HandleSubmit()
 	{
-		
+		if (auction is null || string.IsNullOrWhiteSpace(auction.Name) || auction.CentsStartingPrice < 0)
+		{
+			return;
+		}
+
+		isBusy = true;
+
+		foreach (var file in qFile)
+		{
+			using MemoryStream ms = new MemoryStream();
+			await file.OpenReadStream(fileSize).CopyToAsync(ms);
+			await _supabase.UploadToSupabase(file.Name, ms.ToArray());
+		}
+
+		await _supabase.UpsertToSupabase(auction);
+
+		isBusy = false;
+	}
+
+	private void UpFiles(InputFileChangeEventArgs e)
+	{
+		qFile.Clear();
+
+		foreach (var file in e.GetMultipleFiles(allowedFiles))
+		{
+			qFile.Add(file);
+		}
 	}
 }
