@@ -32,15 +32,30 @@
 	</div>
 </EditForm>
 
+<div>
+	@foreach (var toast in ToastList)
+	{
+		@toast
+	}
+</div>
+
 @code {
 	[SupplyParameterFromForm]
-	public Models.Auction? auction { get; set; } = new();
+	private Models.Auction? auction { get; set; } = new();
 
 	private List<IBrowserFile> qFile = new();
 	private long fileSize = 1024 * 500;
 	private int allowedFiles = 1;
 
 	private bool isBusy = false;
+
+	private List<RenderFragment> ToastList = new();
+	private RenderFragment ToastDiv(string msg) =>
+	@<div id="toast-bottom-right" class="toast-div" role="alert">
+		<div class="text-sm font-normal">@msg.</div>
+	</div>;
+
+	private System.Timers.Timer? ToastTimer;
 
 	protected override void OnInitialized()
 	{
@@ -62,8 +77,13 @@
 			await _supabase.UploadToSupabase(file.Name, ms.ToArray());
 		}
 
+		auction.CentsCurrentBid = auction.CentsStartingPrice;
 		await _supabase.UpsertToSupabase(auction);
 
+		ToastList.Add(ToastDiv("added new auction"));
+		ToastTimerAction();
+
+		auction = new Models.Auction();
 		isBusy = false;
 	}
 
@@ -74,6 +94,42 @@
 		foreach (var file in e.GetMultipleFiles(allowedFiles))
 		{
 			qFile.Add(file);
+		}
+	}
+
+	private int c = 15;
+	private void ToastTimerAction()
+	{
+		if (ToastTimer is null)
+		{
+			ToastTimer = new System.Timers.Timer(c);
+			ToastTimer.Enabled = true;
+			ToastTimer.Elapsed += (sender, args) => {
+				c -= 1;
+
+				if (c == 0)
+				{
+					if (ToastList.Count > 0)
+					{
+						ToastList.Remove(ToastList.First());
+						InvokeAsync(StateHasChanged);
+					}
+					else
+					{
+						ToastTimer.Stop();
+						ToastTimer.Dispose();
+						ToastTimer = null;
+					}
+
+					c = 15;
+				}
+			};
+		} 
+		else
+		{
+			ToastTimer.Stop();
+			ToastTimer.Dispose();
+			ToastTimer = null;
 		}
 	}
 }

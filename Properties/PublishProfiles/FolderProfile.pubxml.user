@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\.x\crossbid-blazor\bin\Publish\</_PublishTargetUrl>
+    <History>True|2024-08-02T15:10:59.1095568Z||;True|2024-08-02T08:07:54.5547246-07:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>

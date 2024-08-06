@@ -7,10 +7,10 @@ namespace crossbid_blazor.Shared.Models;
 public class Auction : BaseModel
 {
 	[PrimaryKey("id")]
-	public Guid Id { get; set; }
+	public Guid Id { get; set; } = Guid.NewGuid();
 
 	[Column("user_id")]
-	public Guid UserId { get; set; }
+	public Guid UserId { get; set; } = Guid.NewGuid();
 
 	[Column("name")]
 	public string Name { get; set; } = "";
@@ -18,11 +18,11 @@ public class Auction : BaseModel
 	[Column("image_url")]
 	public string ImageUrl { get; set; } = "";
 
-	[Column("cents_current_bid")]
-	public double CentsCurrentBid { get; set; }
-
 	[Column("cents_starting_price")]
 	public double CentsStartingPrice { get; set; }
+
+	[Column("cents_current_bid")]
+	public double CentsCurrentBid { get; set; }
 
 	[Column("cents_bid_interval")]
 	public double CentsBidInterval { get; set; }
